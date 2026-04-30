@@ -4,188 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khmer Lesson Assistant V2.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet">
+    
+    <!-- បន្ថែម Library សម្រាប់ទាញយកជា PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         :root {
-            --ink: #1a1208;
-            --paper: #f9f6f0;
-            --gold: #c8922a;
-            --teal: #1b6b6b;
-            --white: #ffffff;
-            --sidebar: #f0ede5;
+            --ink: #1a1208; --paper: #f9f6f0; --gold: #c8922a;
+            --teal: #1b6b6b; --white: #ffffff; --sidebar: #f0ede5;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Battambang', cursive; background: var(--paper); color: var(--ink); display: flex; flex-direction: column; height: 100vh; }
 
         /* Navbar */
-        nav {
-            background: var(--white); border-bottom: 1px solid #ddd;
-            padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo { font-family: 'Moul', serif; color: var(--teal); display: flex; align-items: center; gap: 10px; }
-        .nav-btns { display: flex; gap: 10px; }
-        .btn-nav { padding: 0.5rem 1rem; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-        .btn-download { background: #27ae60; color: white; }
-        .btn-print { background: #eee; color: #333; }
+        nav { background: var(--white); border-bottom: 1px solid #ddd; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Moul', serif; color: var(--teal); font-size: 1.2rem; }
+        .btn-download { background: #27ae60; color: white; padding: 0.6rem 1.2rem; border: none; border-radius: 5px; cursor: pointer; font-family: 'Battambang'; font-weight: bold; }
 
-        /* Main Layout */
+        /* Main */
         main { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 350px; background: var(--sidebar); border-right: 1px solid #ddd; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+        .input-group label { display: block; font-size: 0.75rem; color: #777; margin-bottom: 0.4rem; font-weight: bold; }
+        .input-group input, .input-group textarea { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; font-family: 'Battambang'; }
 
-        /* Sidebar (Input) */
-        .sidebar {
-            width: 350px; background: var(--sidebar); border-right: 1px solid #ddd;
-            padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;
-        }
-        .input-group label { display: block; font-size: 0.75rem; color: #777; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: bold; }
-        .input-group input, .input-group textarea {
-            width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; background: white;
-            font-family: 'Battambang'; font-size: 0.9rem; outline: none;
-        }
-        .file-upload {
-            border: 2px dashed #ccc; padding: 2rem; text-align: center; border-radius: 8px; cursor: pointer; background: white;
-        }
-        .btn-generate {
-            background: var(--teal); color: white; padding: 1rem; border: none; border-radius: 5px;
-            font-family: 'Moul'; font-size: 0.9rem; cursor: pointer; transition: 0.3s;
-        }
-        .btn-generate:hover { background: #145252; transform: translateY(-2px); }
+        .btn-generate { background: var(--teal); color: white; padding: 1rem; border: none; border-radius: 8px; font-family: 'Moul'; cursor: pointer; transition: 0.3s; }
+        .btn-generate:hover { background: #145252; }
 
         /* Preview Area */
-        .preview-area { flex: 1; padding: 2.5rem; overflow-y: auto; background: var(--white); display: flex; justify-content: center; }
-        .lesson-sheet {
-            width: 100%; max-width: 850px; background: white; border: 1px solid #eee; padding: 2rem; box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        }
+        .preview-area { flex: 1; padding: 2rem; overflow-y: auto; background: #ccc; display: flex; justify-content: center; }
+        .lesson-sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
 
-        /* Lesson Table Style */
-        .lesson-header-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-        .lesson-header-table td { border: 1px solid #ddd; padding: 10px; font-size: 0.9rem; }
-        .label-cell { background: #f9f9f9; font-weight: bold; width: 120px; }
-
-        .objectives { margin-bottom: 1.5rem; padding: 1rem; background: #fffcf5; border-left: 4px solid var(--gold); }
-        .objectives h4 { font-family: 'Moul'; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--teal); }
-        .objectives ul { list-style-position: inside; font-size: 0.9rem; line-height: 1.6; }
-
-        .activity-table { width: 100%; border-collapse: collapse; }
-        .activity-table th { background: #f0f0f0; border: 1px solid #ddd; padding: 10px; font-family: 'Moul'; font-size: 0.85rem; }
-        .activity-table td { border: 1px solid #ddd; padding: 12px; font-size: 0.85rem; vertical-align: top; line-height: 1.6; }
-        .step-col { background: #fefefe; font-weight: bold; text-align: center; width: 150px; }
-
-        /* Print Style */
-        @media print {
-            nav, .sidebar { display: none !important; }
-            .preview-area { padding: 0; background: white; }
-            .lesson-sheet { box-shadow: none; border: none; width: 100%; max-width: 100%; }
-        }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        td, th { border: 1px solid #000; padding: 8px; font-size: 1rem; }
+        .label-cell { background: #f2f2f2; font-weight: bold; width: 120px; }
+        .moul { font-family: 'Moul', serif; color: var(--teal); text-align: center; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">
-        <span style="font-size: 1.5rem;">📄</span> ប្រព័ន្ធរៀបចំកិច្ចតែងការបង្រៀន AI
-    </div>
-    <div class="nav-btns">
-        <button class="btn-nav btn-download">📥 ទាញយក (កិច្ចតែងការ)</button>
-        <button class="btn-nav btn-print" onclick="window.print()">🖨️ បោះពុម្ព</button>
-    </div>
+    <div class="logo">📄 Khmer Lesson AI</div>
+    <!-- ប៊ូតុងទាញយកដែលនឹងដើរពិតប្រាកដ -->
+    <button class="btn-download" onclick="downloadPDF()">📥 ទាញយក (កិច្ចតែងការ)</button>
 </nav>
 
 <main>
-    <!-- ផ្នែកបញ្ចូលទិន្នន័យ (Sidebar) -->
     <aside class="sidebar">
         <div class="input-group">
-            <label>ឈ្មោះគ្រូបង្រៀន (Teacher Name)</label>
-            <input type="text" placeholder="ហាន ម៉ុម">
-        </div>
-        <div class="input-group" style="display: flex; gap: 10px;">
-            <div style="flex: 1;">
-                <label>កាលបរិច្ឆេទ</label>
-                <input type="date" value="2026-04-30">
-            </div>
-            <div style="flex: 1;">
-                <label>ចន្ទគតិ</label>
-                <input type="text" placeholder="ថ្ងៃព្រហស្បតិ៍ ១៤កើត...">
-            </div>
+            <label>ឈ្មោះគ្រូបង្រៀន</label>
+            <input type="text" id="teacherIn" placeholder="ហាន ម៉ុម">
         </div>
         <div class="input-group">
-            <label>ខ្លឹមសារមេរៀន (Lesson Content)</label>
-            <textarea rows="5" placeholder="ភាសាខ្មែរ ថ្នាក់ទី៥ រឿង ទឹកចិត្តបុរស..."></textarea>
+            <label>ចំណងជើងមេរៀន</label>
+            <textarea id="topicIn" rows="3" placeholder="ឧទាហរណ៍៖ រឿង ទឹកចិត្តបុរសម្នាក់"></textarea>
         </div>
-        <div class="input-group">
-            <label>ឯកសារយោង (Files)</label>
-            <div class="file-upload">
-                <p style="font-size: 0.8rem; color: #888;">ទាញរូបភាព ឬ ឯកសារបញ្ចូល (រូបភាព/អត្ថបទ)</p>
-            </div>
-        </div>
-        <button class="btn-generate">✨ បង្កើតកិច្ចតែងការ</button>
-        <p style="font-size: 0.65rem; color: #999; text-align: center;">CAMBODIAN MOEYS STANDARD</p>
+        <button class="btn-generate" onclick="generateContent()">✨ បង្កើតកិច្ចតែងការ</button>
     </aside>
 
-    <!-- ផ្នែកបង្ហាញលទ្ធផល (Preview) -->
     <section class="preview-area">
-        <div class="lesson-sheet" id="sheet">
-            <table class="lesson-header-table">
+        <!-- ផ្នែកដែលនឹងត្រូវទាញយកជា PDF -->
+        <div class="lesson-sheet" id="lesson-content">
+            <h2 class="moul">កិច្ចតែងការបង្រៀន</h2>
+            <table>
                 <tr>
-                    <td class="label-cell">មុខវិជ្ជា៖</td>
-                    <td contenteditable="true">ភាសាខ្មែរ</td>
-                    <td class="label-cell">កម្រិតថ្នាក់៖</td>
-                    <td contenteditable="true">ទី៥</td>
-                    <td class="label-cell">មេរៀនទី៖</td>
-                    <td contenteditable="true">២ (ការយល់ដឹងពីការរស់នៅ)</td>
+                    <td class="label-cell">គ្រូបង្រៀន</td>
+                    <td id="out-teacher" contenteditable="true">ហាន ម៉ុម</td>
+                    <td class="label-cell">កាលបរិច្ឆេទ</td>
+                    <td contenteditable="true">30/04/2026</td>
                 </tr>
                 <tr>
-                    <td class="label-cell">ចំណងជើង៖</td>
-                    <td colspan="3" contenteditable="true">រឿង ទឹកចិត្តបុរសម្នាក់</td>
-                    <td class="label-cell">រយៈពេល៖</td>
-                    <td contenteditable="true">៤០ នាទី (២ម៉ោងសិក្សា)</td>
-                </tr>
-                <tr>
-                    <td class="label-cell">គ្រូបង្រៀន៖</td>
-                    <td contenteditable="true">ហាន ម៉ុម</td>
-                    <td class="label-cell">កាលបរិច្ឆេទ៖</td>
-                    <td colspan="3" contenteditable="true">ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែពិសាខ ឆ្នាំមមី ឆស័ក ព.ស. ២៥៦៩ (2026-04-30)</td>
+                    <td class="label-cell">ចំណងជើង</td>
+                    <td colspan="3" id="out-title" style="font-weight:bold;" contenteditable="true">បញ្ចូលចំណងជើងមេរៀន...</td>
                 </tr>
             </table>
 
-            <div class="objectives">
-                <h4>វត្ថុបំណង៖</h4>
-                <ul contenteditable="true">
-                    <li><strong>វិជ្ជាសម្បទា៖</strong> សិស្សប្រាប់ពីអត្ថន័យនៃពាក្យគន្លឹះ និងខ្លឹមសារអប់រំក្នុងរឿងបានត្រឹមត្រូវ។</li>
-                    <li><strong>បំណិនសម្បទា៖</strong> សិស្សរៀនរៀបរាប់ព្រឹត្តិការណ៍តាមលំដាប់លំដោយ និងសរុបរឿងបានយ៉ាងស្ទាត់ជំនាញ។</li>
-                    <li><strong>ចរិយាសម្បទា៖</strong> បណ្តុះស្មារតីសិស្សឱ្យមានទឹកចិត្តសប្បុរស មិនរើសអើង និងចេះជួយគ្នាក្នុងគ្រាក្រ។</li>
-                </ul>
+            <div style="border: 1px solid #000; padding: 15px; margin-bottom: 20px;">
+                <h4 style="font-family: 'Moul'; font-size: 0.9rem;">វត្ថុបំណង៖</h4>
+                <div id="out-aims" contenteditable="true">-- ចុចប៊ូតុងបង្កើតដើម្បីបំពេញ --</div>
             </div>
 
-            <table class="activity-table">
+            <table>
                 <thead>
-                    <tr>
+                    <tr style="background: #eee;">
                         <th>សកម្មភាពគ្រូ</th>
-                        <th>ខ្លឹមសារមេរៀន និងបំណិន</th>
                         <th>សកម្មភាពសិស្ស</th>
                     </tr>
                 </thead>
-                <tbody contenteditable="true">
+                <tbody id="out-activities" contenteditable="true">
                     <tr>
-                        <td>- ពិនិត្យវត្តមាន និងសណ្តាប់ធ្នាប់<br>- រំលឹកកិច្ចការចាស់</td>
-                        <td class="step-col">ជំហានទី១៖ រដ្ឋបាលថ្នាក់<br>អវត្តមាន... វិន័យ... អនាម័យ...</td>
-                        <td>- ប្រធានថ្នាក់រាយការណ៍<br>- ត្រៀមសម្ភារៈសិក្សា</td>
-                    </tr>
-                    <tr>
-                        <td>- តើមេរៀនមុនយើងរៀនអំពីអ្វី?<br>- តើការចេះជួយគ្នាមានសារៈសំខាន់ដូចម្តេច?</td>
-                        <td class="step-col">ជំហានទី២៖ រំលឹកមេរៀនចាស់<br>ការរស់នៅស្អាត</td>
-                        <td>- សិស្សឆ្លើយតាមបទពិសោធន៍មេរៀនកន្លងមក។</td>
-                    </tr>
-                    <tr>
-                        <td>- គ្រូបង្ហាញរូបភាពខ្លឹមសាររឿង រួចសួរ៖ តើរូបនេះបង្ហាញពីអ្វី?</td>
-                        <td class="step-col">ជំហានទី៣៖ មេរៀនថ្មី<br>រឿង ទឹកចិត្តបុរសម្នាក់</td>
-                        <td>- សិស្សសង្កេតរូបភាព និងឆ្លើយសំណួរគ្រូ។</td>
+                        <td>- សំណួររំលឹកមេរៀន</td>
+                        <td>- សិស្សឆ្លើយសំណួរ</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </section>
 </main>
+
+<script>
+    // ១. មុខងារបង្កើតខ្លឹមសារ
+    function generateContent() {
+        const teacher = document.getElementById('teacherIn').value || "ហាន ម៉ុម";
+        const topic = document.getElementById('topicIn').value || "មេរៀនថ្មី";
+
+        document.getElementById('out-teacher').innerText = teacher;
+        document.getElementById('out-title').innerText = topic;
+        document.getElementById('out-aims').innerHTML = `
+            - វិជ្ជាសម្បទា៖ សិស្សយល់ដឹងពី ${topic} បានច្បាស់។<br>
+            - បំណិនសម្បទា៖ សិស្សចេះអនុវត្តលំហាត់ទាក់ទងនឹង ${topic}។
+        `;
+        document.getElementById('out-activities').innerHTML = `
+            <tr><td>- ពន្យល់ពី ${topic}</td><td>- ស្តាប់ និងកត់ត្រា</td></tr>
+            <tr><td>- ដាក់កិច្ចការផ្ទះ</td><td>- ទទួលភារកិច្ច</td></tr>
+        `;
+    }
+
+    // ២. មុខងារទាញយកជា PDF (ប៊ូតុងទាញយកនឹងដើរ)
+    function downloadPDF() {
+        const element = document.getElementById('lesson-content');
+        const opt = {
+            margin:       10,
+            filename:     'កិច្ចតែងការបង្រៀន.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // ដំណើរការបង្កើត PDF រួចទាញយក
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
 
 </body>
 </html>
