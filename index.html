@@ -6,73 +6,57 @@
     <title>ប្រព័ន្ធកិច្ចតែងការ AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&display=swap" rel="stylesheet">
     <style>
-        /* កែប្រែពណ៌ Background ឱ្យកាន់តែស្អាត និងទាក់ទាញ */
         :root { 
             --ink: #1a1208; 
             --paper: #ffffff; 
             --teal: #1b6b6b; 
-            --sidebar: #f8f9fa; /* ពណ៌ចំហៀងស្រាលស្អាត */
-            --bg-preview: #e9ecef; /* ពណ៌ផ្ទៃខាងក្រោយ Preview ថ្មី */
+            --sidebar: #f8f9fa;
+            --bg-professional: #34495e; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Battambang', cursive; background: var(--bg-preview); color: var(--ink); display: flex; flex-direction: column; height: 100vh; }
+        body { font-family: 'Battambang', cursive; background: var(--bg-professional); color: var(--ink); display: flex; flex-direction: column; height: 100vh; }
 
-        nav { background: #fff; border-bottom: 1px solid #dee2e6; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .logo { font-family: 'Moul', serif; color: var(--teal); font-size: 1rem; } /* លុប V7.7 ចេញពីចំណងជើង */
-        .btn-print { background: var(--teal); color: white; padding: 0.6rem 1.2rem; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-print:hover { background: #145252; }
+        nav { background: #fff; border-bottom: 1px solid #ddd; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-family: 'Moul', serif; color: var(--teal); font-size: 1rem; }
+        .btn-print { background: var(--teal); color: white; padding: 0.6rem 1.2rem; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
 
         main { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 360px; background: var(--sidebar); border-right: 1px solid #dee2e6; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
-        .input-group label { display: block; font-size: 0.75rem; color: #495057; margin-bottom: 0.3rem; font-weight: bold; }
-        .input-group input { width: 100%; padding: 0.7rem; border: 1px solid #ced4da; border-radius: 6px; font-family: 'Battambang'; outline: none; transition: 0.2s; }
-        .input-group input:focus { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(27, 107, 107, 0.1); }
+        .sidebar { width: 360px; background: var(--sidebar); border-right: 1px solid #ddd; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+        .input-group label { display: block; font-size: 0.75rem; color: #555; margin-bottom: 0.3rem; font-weight: bold; }
+        .input-group input { width: 100%; padding: 0.65rem; border: 1px solid #ccc; border-radius: 4px; font-family: 'Battambang'; outline: none; }
         
-        ::placeholder { color: #adb5bd; opacity: 1; font-size: 0.85rem; }
-
         .input-row-flex { display: flex; gap: 10px; }
         .input-row-flex .small-input { flex: 1; }
         .input-row-flex .large-input { flex: 2; }
 
-        .upload-section { border: 2px dashed #ced4da; padding: 1.2rem; text-align: center; border-radius: 8px; background: white; cursor: pointer; transition: 0.3s; }
-        .upload-section:hover { border-color: var(--teal); background: #f1f3f5; }
-        #file-list { margin-top: 10px; font-size: 0.7rem; color: #6c757d; }
-        
-        input[type="file"] { display: none; }
-        .btn-generate { background: #e67e22; color: white; padding: 1rem; border: none; border-radius: 6px; font-family: 'Moul'; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn-generate:hover { background: #d35400; }
+        .btn-generate { background: #e67e22; color: white; padding: 1rem; border: none; border-radius: 5px; font-family: 'Moul'; cursor: pointer; margin-top: 10px; }
 
-        .preview-area { flex: 1; padding: 2.5rem; overflow-y: auto; display: flex; justify-content: center; background: var(--bg-preview); }
-        .lesson-sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; }
+        .preview-area { flex: 1; padding: 2rem; overflow-y: auto; display: flex; justify-content: center; }
+        .lesson-sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
-        .lesson-header h2 { font-family: 'Moul'; text-align: center; margin-bottom: 25px; font-size: 1.5rem; color: #000; }
+        .lesson-header h2 { font-family: 'Moul'; text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
         .header-info { margin-left: 10%; margin-bottom: 20px; }
         .header-info p { font-size: 1.05rem; margin-bottom: 8px; }
         .header-info span.label { display: inline-block; width: 110px; font-weight: bold; }
 
-        .hide-colon { display: none; }
-        .show-colon { display: inline; }
-
-        .section-title { font-family: 'Moul'; font-size: 1.1rem; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .section-content { margin-left: 5%; margin-bottom: 15px; line-height: 1.7; color: #333; }
+        .section-title { font-family: 'Moul'; font-size: 1.1rem; margin-top: 15px; margin-bottom: 5px; }
+        .section-content { margin-left: 5%; margin-bottom: 15px; line-height: 1.6; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
-        td, th { border: 1px solid #333; padding: 10px; font-size: 0.95rem; vertical-align: top; }
-        th { background: #f8f9fa; font-weight: bold; text-align: center; font-family: 'Battambang'; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        td, th { border: 1px solid #000; padding: 8px; font-size: 0.9rem; vertical-align: top; }
+        th { background: #f2f2f2; text-align: center; }
 
         @media print {
-            @page { size: A4; margin: 0; }
-            body, html { background: white !important; height: auto !important; overflow: visible !important; }
             nav, .sidebar { display: none !important; }
-            .preview-area { padding: 0 !important; margin: 0 !important; background: white !important; overflow: visible !important; display: block !important; }
-            .lesson-sheet { box-shadow: none !important; border: none !important; width: 100% !important; margin: 0 !important; padding: 15mm !important; }
+            .preview-area { padding: 0; background: white; }
+            .lesson-sheet { box-shadow: none; border: none; width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">📄 ប្រព័ន្ធកិច្ចតែងការ AI</div> <!-- លុបពាក្យ V7.7 ចេញរួចរាល់ -->
+    <div class="logo">📄 ប្រព័ន្ធកិច្ចតែងការ AI</div>
     <button class="btn-print" onclick="window.print()">🖨️ បោះពុម្ពកិច្ចតែងការ</button>
 </nav>
 
@@ -80,58 +64,46 @@
     <aside class="sidebar">
         <div class="input-group">
             <label>មុខវិជ្ជា</label>
-            <input type="text" id="in-subject" placeholder="ឧ. ភាសាខ្មែរ" oninput="syncLive()">
+            <input type="text" id="in-subject" placeholder="ឧ. ភាសាខ្មែរ">
         </div>
-
         <div class="input-group">
             <label>មេរៀនទី និង ចំណងជើង</label>
             <div class="input-row-flex">
-                <input type="text" id="in-lesson-num" class="small-input" placeholder="ឧ. ១" oninput="syncLive()">
-                <input type="text" id="in-lesson-title" class="large-input" placeholder="ឧ. កីឡា និងល្បែងកម្សាន្ត" oninput="syncLive()">
+                <input type="text" id="in-lesson-num" class="small-input" placeholder="ឧ. ១">
+                <input type="text" id="in-lesson-title" class="large-input" placeholder="ឧ. កីឡា">
             </div>
         </div>
-
         <div class="input-group">
             <label>ខ្លឹមសារ</label>
-            <input type="text" id="in-summary" placeholder="ឧ. បំណិន ព្រឹត្តិការណ៍នៃរឿង" oninput="syncLive()">
+            <input type="text" id="in-summary" placeholder="ឧ. បំណិន ព្រឹត្តិការណ៍នៃរឿង">
         </div>
         <div class="input-group">
             <label>ដកស្រង់</label>
-            <input type="text" id="in-source" placeholder="ឧ. ស.ស ទំព័រទី២" oninput="syncLive()">
+            <input type="text" id="in-source" placeholder="ឧ. ស.ស ទំព័រទី២">
         </div>
         <div class="input-group">
             <label>រយៈពេល</label>
-            <input type="text" id="in-time" placeholder="ឧ. ២ម៉ោង" oninput="syncLive()">
+            <input type="text" id="in-time" placeholder="ឧ. ២ម៉ោង">
         </div>
         <div class="input-group">
             <label>ឈ្មោះគ្រូបង្រៀន</label>
-            <input type="text" id="in-teacher" placeholder="ឧ. ម៉ម សុវណ្ណដេត" oninput="syncLive()">
+            <input type="text" id="in-teacher" placeholder="ឧ. ម៉ម សុវណ្ណដេត">
         </div>
         
-        <hr style="border: 0; border-top: 1px solid #dee2e6; margin: 0.5rem 0;">
-        
-        <div class="input-group">
-            <label>📁 បញ្ចូលឯកសារ</label>
-            <div class="upload-section" onclick="document.getElementById('multi-files').click()">
-                <span id="lbl-upload">🖱️ ចុចជ្រើសរើសឯកសារ</span>
-                <input type="file" id="multi-files" multiple onchange="handleMultipleFiles(event)">
-            </div>
-            <div id="file-list"></div>
-        </div>
-        <button class="btn-generate" onclick="generateLesson()">✨ បង្កើតកិច្ចតែងការ</button>
+        <button id="btn-run" class="btn-generate">✨ បង្កើតកិច្ចតែងការ</button>
     </aside>
 
     <section class="preview-area">
         <div class="lesson-sheet">
             <div class="lesson-header">
                 <h2>កិច្ចតែងការបង្រៀន</h2>
-                <div class="header-info" contenteditable="true">
-                    <p><span class="label">-មុខវិជ្ជា</span> <span id="col-subject" class="hide-colon">៖ <span id="out-subject"></span></span></p>
-                    <p><span class="label">-មេរៀនទី<span id="out-lesson-num"></span></span> <span id="col-lesson-title" class="hide-colon">៖ <span id="out-lesson-title"></span></span></p>
-                    <p><span class="label">-ខ្លឹមសារ</span> <span id="col-summary" class="hide-colon">៖ <span id="out-summary"></span></span></p>
-                    <p><span class="label">-ដកស្រង់</span> <span id="col-source" class="hide-colon">៖ <span id="out-source"></span></span></p>
-                    <p><span class="label">-រយៈពេល</span> <span id="col-time" class="hide-colon">៖ <span id="out-time"></span></span></p>
-                    <p><span class="label">-គ្រូបង្រៀន</span> <span id="col-teacher" class="hide-colon">៖ <span id="out-teacher"></span></span></p>
+                <div class="header-info">
+                    <p><span class="label">-មុខវិជ្ជា</span> ៖ <span id="out-subject"></span></p>
+                    <p><span class="label">-មេរៀនទី<span id="out-lesson-num"></span></span> ៖ <span id="out-lesson-title"></span></p>
+                    <p><span class="label">-ខ្លឹមសារ</span> ៖ <span id="out-summary"></span></p>
+                    <p><span class="label">-ដកស្រង់</span> ៖ <span id="out-source"></span></p>
+                    <p><span class="label">-រយៈពេល</span> ៖ <span id="out-time"></span></p>
+                    <p><span class="label">-គ្រូបង្រៀន</span> ៖ <span id="out-teacher"></span></p>
                 </div>
             </div>
 
@@ -169,42 +141,26 @@
 </main>
 
 <script>
-    // រក្សាមុខងារ Logic ដើម
-    function syncLive() {
-        const fields = ['subject', 'summary', 'source', 'time', 'teacher'];
-        fields.forEach(f => {
-            const inputVal = document.getElementById('in-' + f).value;
-            const output = document.getElementById('out-' + f);
-            const colonWrapper = document.getElementById('col-' + f);
-            if (inputVal.trim() !== "") {
-                output.innerText = inputVal;
-                colonWrapper.className = "show-colon";
-            } else {
-                colonWrapper.className = "hide-colon";
-            }
-        });
+    // ប្រើ Event Listener ជំនួសឱ្យ onclick ធម្មតា ដើម្បីជៀសវាងបញ្ហា Security លើ GitHub
+    document.getElementById('btn-run').addEventListener('click', function() {
+        // បញ្ជីឈ្មោះ ID សម្រាប់បញ្ជូនទិន្នន័យ
+        const mapping = {
+            'in-subject': 'out-subject',
+            'in-lesson-num': 'out-lesson-num',
+            'in-lesson-title': 'out-lesson-title',
+            'in-summary': 'out-summary',
+            'in-source': 'out-source',
+            'in-time': 'out-time',
+            'in-teacher': 'out-teacher'
+        };
 
-        const lessonNum = document.getElementById('in-lesson-num').value;
-        const lessonTitle = document.getElementById('in-lesson-title').value;
-        document.getElementById('out-lesson-num').innerText = lessonNum;
-        const titleOutput = document.getElementById('out-lesson-title');
-        const titleColon = document.getElementById('col-lesson-title');
+        for (let inputId in mapping) {
+            let val = document.getElementById(inputId).value;
+            document.getElementById(mapping[inputId]).innerText = val;
+        }
         
-        if (lessonTitle.trim() !== "") {
-            titleOutput.innerText = lessonTitle;
-            titleColon.className = "show-colon";
-        } else {
-            titleColon.className = "hide-colon";
-        }
-    }
-
-    function handleMultipleFiles(event) {
-        if (event.target.files.length > 0) {
-            document.getElementById('lbl-upload').innerText = "✅ បានជ្រើសរើស " + event.target.files.length + " ឯកសារ";
-        }
-    }
-
-    function generateLesson() { syncLive(); }
+        alert("កិច្ចតែងការត្រូវបានបង្កើតរួចរាល់!");
+    });
 </script>
 
 </body>
